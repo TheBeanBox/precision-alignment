@@ -359,12 +359,12 @@ local function Stack_Loop()
 		elseif ret then
 			-- Create undo if stack_IDs are different
 			if not stackID_old then
-				stackID_old = e.stackID
+				stackID_old = ret.stackID
 			elseif stackID_old ~= e.stackID then
-				Stack_Undo( undo_table )
-				stackID_old = e.stackID
+				Stack_Undo(undo_table)
+				stackID_old = ret.stackID
 			end
-			table.insert( undo_table, e )
+			table.insert(undo_table, ret)
 			return true
 		end
 	end
