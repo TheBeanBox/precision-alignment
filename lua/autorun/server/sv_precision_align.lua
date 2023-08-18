@@ -301,13 +301,13 @@ local function Queue_Process()
 	-- Apply nocollide
 	if ent_table.nocollide then
 		-- Nocollide each stacked ent with previous
-		if IsValid( last_ent ) then
-			constraint.NoCollide( ent, last_ent )
+		if IsValid(last_ent) then
+			constraint.NoCollide(ent, last_ent)
 		end
 
 		-- Nocollide selected ent with final stacked ent
 		if not stack_queue[1] or stackID ~= stack_queue[1].stackID then
-			constraint.NoCollide( ent, ent_table.data.Entity )
+			constraint.NoCollide(ent, ent_table.data.Entity)
 			last_ent = nil
 		else
 			last_ent = ent
@@ -316,35 +316,36 @@ local function Queue_Process()
 		last_ent = nil
 	end
 
-	ent:GetPhysicsObject():EnableMotion( false )
+	ent:GetPhysicsObject():EnableMotion(false)
 
-	return { ply = ply,
-			 ent = ent,
-			 stackID = stackID
-			}
+	return {
+		ply = ply,
+		ent = ent,
+		stackID = stackID
+	}
 end
 
 cleanup.Register( "stacks" )
 
 -- Create the undo function at the end of each stack_ID queue
-local function Stack_Undo( undo_table ) -- if table.Count( undo_table ) == 0 then return end
+local function Stack_Undo(undo_table) -- if table.Count( undo_table ) == 0 then return end
 	local ply = undo_table[1].ply
 
 	local model = ""
-	if IsValid( undo_table[1].ent ) then
+	if IsValid(undo_table[1].ent) then
 		model = undo_table[1].ent:GetModel() or ""
 	end
 
 	undo.Create( "PA Stack " .. tostring(#undo_table) .. "x (" .. model .. ")" )
 		for i = 1, #undo_table do
 			local ent = undo_table[i].ent
-			undo.SetPlayer( ply )
-			undo.AddEntity( ent )
-			ply:AddCleanup( "stacks", ent )
+			undo.SetPlayer(ply)
+			undo.AddEntity(ent)
+			ply:AddCleanup("stacks", ent)
 		end
 	undo.Finish()
 
-	table.Empty( undo_table )
+	table.Empty(undo_table)
 end
 
 -- Handle stack queueing (called by timer)
@@ -355,12 +356,12 @@ local function Stack_Loop()
 		local ok, ret = pcall(Queue_Process)
 
 		if not ok then
-			ErrorNoHalt(e, "\n")
+			ErrorNoHalt(ret, "\n")
 		elseif ret then
 			-- Create undo if stack_IDs are different
 			if not stackID_old then
 				stackID_old = ret.stackID
-			elseif stackID_old ~= e.stackID then
+			elseif stackID_old ~= ret.stackID then
 				Stack_Undo(undo_table)
 				stackID_old = ret.stackID
 			end
@@ -379,23 +380,23 @@ local function Stack_Loop()
 	return false
 end
 
-local function Queue_Add( ply, ent, stackID )
+local function Queue_Add(ply, ent, stackID)
 	local ent_table = {
 		ply = ply,
-		nocollide = ply:GetInfoNum( PA_ .. "stack_nocollide", 0 ) ~= 0,
-		data = duplicator.CopyEntTable( ent ),
+		nocollide = ply:GetInfoNum(PA_ .. "stack_nocollide", 0) ~= 0,
+		data = duplicator.CopyEntTable(ent),
 		collision_group = ent:GetCollisionGroup(),
 		stackID = stackID
 	}
 
-	table.insert( stack_queue, ent_table )
+	table.insert(stack_queue, ent_table)
 
 	-- Start processing the stack queue
 	if not processing then
 		processing = true
-		local Delay = GetConVarNumber( PA_ .. "stack_delay", 0.1 )
+		local Delay = GetConVarNumber(PA_ .. "stack_delay", 0.1)
 
-		timer.Create( "PA_StackTimer", Delay, 0, Stack_Loop )
+		timer.Create("PA_StackTimer", Delay, 0, Stack_Loop)
 	end
 end
 
