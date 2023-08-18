@@ -1,4 +1,4 @@
-// Derma UI for precision alignment stool (client only) - By Wenli
+-- Derma UI for precision alignment stool (client only) - By Wenli
 if SERVER then return end
 
 local PA = "precision_align"
@@ -35,7 +35,7 @@ local function AddMenuText( text, x, y, parent )
 	local Text = vgui.Create( "DLabel", parent )
 	Text:SetFontInternal("Default")
 	Text:SetText( text )
-	Text:SizeToContents() 
+	Text:SizeToContents()
 	Text:SetPos( x, y )
 	return Text
 end
@@ -49,9 +49,9 @@ local function play_sound_false()
 end
 
 
-//********************************************************************************************************************//
-// Custom Derma Controls
-//********************************************************************************************************************//
+--********************************************************************************************************************--
+-- Custom Derma Controls
+--********************************************************************************************************************--
 
 
 /*---------------------------------------------------------
@@ -69,14 +69,14 @@ function STACK_POPUP:Init()
 	self:SetDraggable( false )
 	self:SetBackgroundBlur( true )
 	self:SetDrawOnTop( true )
-	
+
 	self.text_stackamount = vgui.Create( "DLabel", self )
 		self.text_stackamount:SetText( "Stack Amount:" )
 		self.text_stackamount:SizeToContents()
 		self.text_stackamount:SetContentAlignment( 8 )
 		self.text_stackamount:SetTextColor( color_white )
-		self.text_stackamount:StretchToParent( 5, 40, 5, 5 ) 
-			
+		self.text_stackamount:StretchToParent( 5, 40, 5, 5 )
+
 	self.slider_stackamount = vgui.Create( "DNumSlider", self )
 		self.slider_stackamount:StretchToParent( 10, nil, 10, nil )
 		self.slider_stackamount:AlignTop( 45 )
@@ -89,7 +89,7 @@ function STACK_POPUP:Init()
 			self.button_ok:DoClick()
 		end
 		self.slider_stackamount.Text:RequestFocus()
-	
+
 	self.checkbox_nocollide = vgui.Create( "DCheckBoxLabel", self )
 		self.checkbox_nocollide:SetText( "Nocollide" )
 		self.checkbox_nocollide:SetToolTip( "Nocollide each stacked entity with the next" )
@@ -97,7 +97,7 @@ function STACK_POPUP:Init()
 		self.checkbox_nocollide:AlignBottom( 45 )
 		self.checkbox_nocollide:AlignLeft( 10 )
 		self.checkbox_nocollide:SetValue( GetConVarNumber( PA_.."stack_nocollide" ) )
-	
+
 	self.button_ok = vgui.Create( "DButton", self )
 		self.button_ok:SetText( "OK" )
 		self.button_ok:SizeToContents()
@@ -106,14 +106,14 @@ function STACK_POPUP:Init()
 		self.button_ok:AlignBottom( 5 )
 		self.button_ok.DoClick = function()
 			RunConsoleCommand( PA_.."stack_num", tostring( math.Clamp(self.slider_stackamount:GetValue(), 1, 20) ) )
-			
+
 			local nocollide = 0
 			if self.checkbox_nocollide:GetChecked() then nocollide = 1 end
 			RunConsoleCommand( PA_.."stack_nocollide", tostring( nocollide ) )
-			
+
 			self:Close()
 		end
-			
+
 	self.button_cancel = vgui.Create( "DButton", self )
 		self.button_cancel:SetText( "Cancel" )
 		self.button_cancel:SizeToContents()
@@ -122,21 +122,21 @@ function STACK_POPUP:Init()
 		self.button_cancel.DoClick = function() self:Close() end
 		self.button_cancel:AlignRight( 5 )
 		self.button_cancel:AlignBottom( 5 )
-	
+
 	self:MakePopup()
 	self:DoModal()
 end
 
-		
+
 function STACK_POPUP:Paint( w, h)
 	if ( self.m_bBackgroundBlur ) then
 		Derma_DrawBackgroundBlur( self, self.m_fCreateTime )
 	end
-	
+
 	local width, height = self:GetSize()
 	draw.RoundedBox(6, 0, 0, width, 25, BGColor_Display)
 	draw.RoundedBox(6, 2, 2, width - 4, 21, BGColor_Background)
-	
+
 	draw.RoundedBox(6, 0, 25, width, height - 25, Color(0, 0, 0, 255))
 	draw.RoundedBox(6, 1, 26, width - 2, height - 27, BGColor_Background )
 end
@@ -162,8 +162,8 @@ function CONSTRUCT_LISTVIEW:Text( title, text )
 		local line = self:AddLine(text .. " " .. tostring(i))
 		line.indicator = vgui.Create( "PA_Indicator", line )
 	end
-	
-	// Format header
+
+	-- Format header
 	local Header = self.Columns[1].Header
 	Header:SetFont("DefaultBold")
 	Header:SetContentAlignment( 5 )
@@ -185,7 +185,7 @@ end
 
 vgui.Register("PA_Construct_ListView", CONSTRUCT_LISTVIEW, "DListView")
 
-// Indicator to tell whether construct is defined
+-- Indicator to tell whether construct is defined
 local INDICATOR = {}
 
 function INDICATOR:Init()
@@ -200,7 +200,7 @@ end
 
 function INDICATOR:Paint(w,h)
 	local textbox = self:GetParent()
-	
+
 	if PA_funcs.construct_exists(textbox:GetListView().construct_type, textbox:GetID()) then
 		draw.RoundedBox( 6, 0, 0, self:GetWide(), self:GetTall(), Color(0,230,0,255) )
 	end
@@ -220,8 +220,8 @@ function XYZ_SLIDER:Init()
 	self:SetMinMax( -50000, 50000 )
 	self:SetDecimals( 3 )
 	self:SetValue( 0 )
-	
-	// This is so we can identify the slider belongs to PA, so we can hook keyboard focus below
+
+	-- This is so we can identify the slider belongs to PA, so we can hook keyboard focus below
 	self:GetTextArea().Type = "PA"
 end
 
@@ -235,7 +235,7 @@ function text:Init()
 end
 vgui.Register("PA_Temp_textbox", text, "DLabel")
 
-// These hooks allow the slider text boxes to steal keyboard focus
+-- These hooks allow the slider text boxes to steal keyboard focus
 local function TextFocusOn( pnl )
 	if	pnl:GetClassName() == "TextEntry" and pnl.Type == "PA" then
 		PA_manipulation_panel:SetKeyBoardInputEnabled( true )
@@ -256,11 +256,11 @@ function XYZ_SLIDERS:Init()
 	self.slider_x = vgui.Create( "PA_XYZ_Slider", self )
 	self.slider_y = vgui.Create( "PA_XYZ_Slider", self )
 	self.slider_z = vgui.Create( "PA_XYZ_Slider", self )
-	
+
 	self.slider_x.Label:SetWide( 5 )
 	self.slider_y.Label:SetWide( 5 )
 	self.slider_z.Label:SetWide( 5 )
-	
+
 	self.slider_x:SetText("X")
 	self.slider_y:SetText("Y")
 	self.slider_z:SetText("Z")
@@ -273,11 +273,11 @@ function XYZ_SLIDERS:PerformLayout()
 	local y2 = h / 2 - 20
 	local y3 = h - 40
 	local width, height = w, 100
-	
+
 	self.slider_x:SetWide( width ) --:SetSize(width, height)
 	self.slider_y:SetWide( width ) --:SetSize(width, height)
 	self.slider_z:SetWide( width ) --:SetSize(width, height)
-	
+
 	self.slider_x:SetPos(x, y1)
 	self.slider_y:SetPos(x, y2)
 	self.slider_z:SetPos(x, y3)
@@ -288,7 +288,7 @@ function XYZ_SLIDERS:GetValues()
 	x = self.slider_x:GetValue()
 	y = self.slider_y:GetValue()
 	z = self.slider_z:GetValue()
-	
+
 	return Vector( x, y, z )
 end
 
@@ -348,18 +348,18 @@ local FUNCTION_BUTTON_2 = {}
 function FUNCTION_BUTTON_2:Init()
 	self:SetSize(130, 25)
 	table.insert(function_buttons_2_list, self)
-	
+
 	self.DoClick = function()
 		local T = self.selections
 		local tab = self:GetParent()
-		
+
 		tab.activebutton = self
 		tab:UpdateDescription()
-		
+
 		tab.list_point_primary:SetVisible(false)
 		tab.list_line_primary:SetVisible(false)
 		tab.list_plane_primary:SetVisible(false)
-			
+
 		if T[1] == "Point" then
 			tab.colour_panel_1:SetColour(BGColor_Point)
 			tab.list_point_primary:SetVisible(true)
@@ -370,45 +370,45 @@ function FUNCTION_BUTTON_2:Init()
 			tab.colour_panel_1:SetColour(BGColor_Plane)
 			tab.list_plane_primary:SetVisible(true)
 		else
-			tab.colour_panel_1:SetColour(BGColor_Disabled)			
+			tab.colour_panel_1:SetColour(BGColor_Disabled)
 		end
-				
+
 		if  not (T[2] == 0) then
-			//tab.point_text:SetText( "Select " .. tostring(T[2]) )
+			--tab.point_text:SetText( "Select " .. tostring(T[2]) )
 			tab.colour_panel_2:SetColour(BGColor_Point)
 			tab.list_point_secondary:SetVisible(true)
 		else
-			//tab.point_text:SetText( "" )
+			--tab.point_text:SetText( "" )
 			tab.colour_panel_2:SetColour(BGColor_Disabled)
 			tab.list_point_secondary:SetVisible(false)
 		end
-		
+
 		if T[3] ~= 0 then
-			//tab.line_text:SetText( "Select " .. tostring(T[3]) )
+			--tab.line_text:SetText( "Select " .. tostring(T[3]) )
 			tab.colour_panel_3:SetColour(BGColor_Line)
 			tab.list_line_secondary:SetVisible(true)
 		else
-			//tab.line_text:SetText( "" )
+			--tab.line_text:SetText( "" )
 			tab.colour_panel_3:SetColour(BGColor_Disabled)
 			tab.list_line_secondary:SetVisible(false)
 		end
-		
+
 		if T[4] ~= 0 then
-			//tab.plane_text:SetText( "Select " .. tostring(T[4]) )
+			--tab.plane_text:SetText( "Select " .. tostring(T[4]) )
 			tab.colour_panel_4:SetColour(BGColor_Plane)
 			tab.list_plane_secondary:SetVisible(true)
 		else
-			//tab.plane_text:SetText( "" )
+			--tab.plane_text:SetText( "" )
 			tab.colour_panel_4:SetColour(BGColor_Disabled)
 			tab.list_plane_secondary:SetVisible(false)
-		end		
+		end
 	end
 end
 
-// Override mouse functions (make it into a toggle button)
+-- Override mouse functions (make it into a toggle button)
 function FUNCTION_BUTTON_2:OnMousePressed( mousecode )
-	if !self.Depressed then
-		// pop up any previously depressed buttons
+	if not self.Depressed then
+		-- pop up any previously depressed buttons
 		for k, v in pairs (function_buttons_2_list) do
 			if v.Depressed then
 				v.Depressed = false
@@ -435,18 +435,18 @@ local FUNCTION_BUTTON_3 = {}
 function FUNCTION_BUTTON_3:Init()
 	self:SetSize(110, 25)
 	table.insert(function_buttons_3_list, self)
-	
+
 	self.DoClick = function()
 		local T = self.selections
 		local tab = self:GetParent()
-		
+
 		tab.activebutton = self
-		
+
 		tab.list_point_1:SetVisible(false)
 		tab.list_point_2:SetVisible(false)
 		tab.list_line_1:SetVisible(false)
 		tab.list_plane_1:SetVisible(false)
-			
+
 		if T == "Point" then
 			tab.colour_panel_1:SetColour(BGColor_Point)
 			tab.colour_panel_2:SetColour(BGColor_Point)
@@ -462,15 +462,15 @@ function FUNCTION_BUTTON_3:Init()
 			tab.list_plane_1:SetVisible(true)
 		else
 			tab.colour_panel_1:SetColour(BGColor_Disabled)
-			tab.colour_panel_2:SetColour(BGColor_Disabled)		
+			tab.colour_panel_2:SetColour(BGColor_Disabled)
 		end
 	end
 end
 
-// Override mouse functions (make it into a toggle button)
+-- Override mouse functions (make it into a toggle button)
 function FUNCTION_BUTTON_3:OnMousePressed( mousecode )
-	if !self.Depressed then
-		// pop up any previously depressed buttons
+	if not self.Depressed then
+		-- pop up any previously depressed buttons
 		for k, v in pairs (function_buttons_3_list) do
 			if v.Depressed then
 				v.Depressed = false
@@ -497,27 +497,27 @@ local FUNCTION_BUTTON_ROTATION = {}
 function FUNCTION_BUTTON_ROTATION:Init()
 	self:SetSize(168, 25)
 	table.insert(rotation_function_buttons_list, self)
-	
+
 	self.DoClick = function()
 		local tab = self:GetParent()
-		
+
 		tab.activebutton = self
 		tab:UpdateDescription()
-		
-		// Optional pivot point / axis selections
+
+		-- Optional pivot point / axis selections
 		if self.options[1] ~= 0 then
 			tab.list_pivotpoint:SetVisible(true)
 		else
 			tab.list_pivotpoint:SetVisible(false)
 		end
-		
+
 		if self.options[2] ~= 0 then
 			tab.list_line_axis:SetVisible(true)
 		else
 			tab.list_line_axis:SetVisible(false)
 		end
-		
-		// Main function selections
+
+		-- Main function selections
 		if self.selections[1] ~= 0 then
 			tab.colour_panel_1:SetColour(BGColor_Line)
 			tab.list_line_1:SetVisible(true)
@@ -525,7 +525,7 @@ function FUNCTION_BUTTON_ROTATION:Init()
 			tab.colour_panel_1:SetColour(BGColor_Disabled)
 			tab.list_line_1:SetVisible(false)
 		end
-		
+
 		if self.selections[2] ~= 0 then
 			tab.colour_panel_2:SetColour(BGColor_Line)
 			tab.list_line_2:SetVisible(true)
@@ -533,7 +533,7 @@ function FUNCTION_BUTTON_ROTATION:Init()
 			tab.colour_panel_2:SetColour(BGColor_Disabled)
 			tab.list_line_2:SetVisible(false)
 		end
-		
+
 		if self.selections[3] ~= 0 then
 			tab.colour_panel_3:SetColour(BGColor_Plane)
 			tab.list_plane_1:SetVisible(true)
@@ -541,21 +541,21 @@ function FUNCTION_BUTTON_ROTATION:Init()
 			tab.colour_panel_3:SetColour(BGColor_Disabled)
 			tab.list_plane_1:SetVisible(false)
 		end
-		
+
 		if self.selections[4] ~= 0 then
 			tab.colour_panel_4:SetColour(BGColor_Plane)
 			tab.list_plane_2:SetVisible(true)
 		else
 			tab.colour_panel_4:SetColour(BGColor_Disabled)
 			tab.list_plane_2:SetVisible(false)
-		end		
+		end
 	end
 end
 
-// Override mouse functions (make it into a toggle button)
+-- Override mouse functions (make it into a toggle button)
 function FUNCTION_BUTTON_ROTATION:OnMousePressed( mousecode )
-	if !self.Depressed then
-		// pop up any previously depressed buttons
+	if not self.Depressed then
+		-- pop up any previously depressed buttons
 		for k, v in pairs (rotation_function_buttons_list) do
 			if v.Depressed then
 				v.Depressed = false
@@ -620,11 +620,11 @@ end
 function COPY_CLIPBOARD_BUTTON:SetSliders( panel )
 	self:SetFunction( function()
 		local v = panel:GetValues()
-		// Format string for better use with E2
+		-- Format string for better use with E2
 		local x = tostring( math.Round(v.x * 1000) / 1000 )
 		local y = tostring( math.Round(v.y * 1000) / 1000 )
 		local z = tostring( math.Round(v.z * 1000) / 1000 )
-		
+
 		local str = x .. ", " .. y .. ", " .. z
 		SetClipboardText( str )
 		return true
@@ -697,13 +697,13 @@ vgui.Register("PA_Copy_Left_Button", COPY_LEFT_BUTTON, "PA_Function_Button")
 local MOVE_BUTTON = {}
 function MOVE_BUTTON:SetFunction( func )
 	self.DoClick = function()
-		// Alt to bring up stack number query
+		-- Alt to bring up stack number query
 		local alt = LocalPlayer():KeyDown( IN_WALK )
 		if alt then
 			vgui.Create( "PA_Stack_Popup" )
 			return
 		end
-		
+
 		local ret = func()
 		if ret == true then
 			play_sound_true()
@@ -716,7 +716,7 @@ end
 function MOVE_BUTTON:Think()
 	if IsValid(PA_activeent) and self:GetDisabled() then
 		self:SetDisabled(false)
-	elseif !IsValid(PA_activeent) and !self:GetDisabled() then
+	elseif not IsValid(PA_activeent) and !self:GetDisabled() then
 		self:SetDisabled(true)
 	end
 end
@@ -744,7 +744,7 @@ function COLOUR_PANEL:Paint(w,h)
 	for k, v in pairs (self.colour) do
 		self.colour[k] = v + (self.setcolour[k] - v)/10
 	end
-	
+
 	draw.RoundedBox(6, 0, 0, self:GetWide(), self:GetTall(), self.colour)
 	draw.RoundedBox(6, 5, 15, self:GetWide() - 10, self:GetTall() - 20, BGColor)
 end
@@ -764,7 +764,7 @@ function CONSTRAINT_TITLE_TEXT:Init()
 end
 
 vgui.Register("PA_Constraint_Title_Text", CONSTRAINT_TITLE_TEXT, "DLabel")
- 
+
 
 local CONSTRAINTS_SHEET = {}
 
@@ -772,27 +772,27 @@ function CONSTRAINTS_SHEET:Paint(w,h)
 	draw.RoundedBox(6, 0, 0, self:GetWide(), self:GetTall(), Color(140,140,140,255))
 end
 
-// Taken from gamemodes/sandbox/gamemode/spawnmenu/controls/control_presets.lua
+-- Taken from gamemodes/sandbox/gamemode/spawnmenu/controls/control_presets.lua
 function CONSTRAINTS_SHEET:AddComboBox( data )
 	local data = table.LowerKeyNames( data )
 	local ctrl = vgui.Create( "ControlPresets", self )
 	ctrl:SetPreset( data.folder )
 	if ( data.options ) then
 		for k, v in pairs( data.options ) do
-			if ( k != "id" ) then // Some txt file configs still have an `ID'. But these are redundant now.
+			if ( k ~= "id" ) then -- Some txt file configs still have an `ID'. But these are redundant now.
 				ctrl:AddOption( k, v )
 			end
 		end
 	end
-   
+
 	if ( data.cvars ) then
 		for k, v in pairs( data.cvars ) do
 			ctrl:AddConVar( v )
 		end
 	end
-   
+
    ctrl:SetWide(300)
-   
+
 	return ctrl
 end
 
@@ -807,7 +807,7 @@ function CONSTRAINT_SLIDER:Init()
 	self:SetDecimals( 2 )
 end
 
-// Base this off PA_XYZ_Slider so the keyboard hook functions apply
+-- Base this off PA_XYZ_Slider so the keyboard hook functions apply
 vgui.Register("PA_Constraint_Slider", CONSTRAINT_SLIDER, "PA_XYZ_Slider")
 
 /*---------------------------------------------------------
@@ -823,7 +823,7 @@ function COLOUR_CIRCLE:Init()
 end
 
 function COLOUR_CIRCLE:TranslateValues( x, y )
-	// Modified version of default TranslateValues function - so it won't print to console all the damn time
+	-- Modified version of default TranslateValues function - so it won't print to console all the damn time
 	x = x - 0.5
 	y = y - 0.5
 	local angle = math.atan2( x, y )
@@ -831,38 +831,38 @@ function COLOUR_CIRCLE:TranslateValues( x, y )
 	length = math.Clamp( length, 0, 0.5 )
 	x = 0.5 + math.sin( angle ) * length
 	y = 0.5 + math.cos( angle ) * length
-	
+
 	self.H = math.deg( angle ) + 270
 	self.S = length * 2
-	
+
 	self:OnChange( self.H, self.S )
-	
+
 	return x, y
 end
 
 function COLOUR_CIRCLE:GetColor()
 	return self.H, self.S
-end 
+end
 
 function COLOUR_CIRCLE:SetColor( H, S )
 	self.H, self.S = H, S
 	local x, y
 	local length = S / 2
 	local angle = math.rad( H - 270 )
-	
+
 	local x = 0.5 + math.sin( angle ) * length
 	local y = 0.5 + math.cos( angle ) * length
-	
-	//self:SetSlideX( x )
-	//self:SetValue( y )
-	
+
+	--self:SetSlideX( x )
+	--self:SetValue( y )
+
 	self:OnChange( self.H, self.S )
-	
+
 	return x, y
 end
 
 function COLOUR_CIRCLE:OnChange( H, S )
-	// Overwrite in main body
+	-- Overwrite in main body
 end
 
 vgui.Register("PA_ColourCircle", COLOUR_CIRCLE, "DColorCube")
@@ -890,7 +890,7 @@ function HSV_COLOUR_CONTROL:Init()
 			RunConsoleCommand( self.convar .. "_v", V )
 			RunConsoleCommand( self.convar .. "_a", A )
 		end
-		
+
 	/*
 	self.ColourCircle = vgui.Create("PA_ColourCircle", self)
 		self.ColourCircle:SetPos(0, 35)
@@ -898,16 +898,16 @@ function HSV_COLOUR_CONTROL:Init()
 		self.ColourCircle.OnChange = function( panel, H, S )
 			local colour_brightness = HSVToColor( H, S, 1 )
 			self.Bar_Brightness:SetFGColor( colour_brightness )
-			
+
 			local V = self.Bar_Brightness:GetColor()
 			local colour_alpha = HSVToColor( H, S, V )
 			self.Bar_Alpha:SetFGColor( colour_alpha )
-			
+
 			RunConsoleCommand( self.convar .. "_h", H )
 			RunConsoleCommand( self.convar .. "_s", S )
-		end 
-	
-	
+		end
+
+
 	self.Bar_Brightness = vgui.Create( "DAlphaBar", self )
 		-- self.Bar_Brightness:SetBGColor( "vgui/hsv-brightness" )
 		self.Bar_Brightness:SetPaintBackground( "vgui/hsv-brightness" )
@@ -916,29 +916,29 @@ function HSV_COLOUR_CONTROL:Init()
 		self.Bar_Brightness.GetColor = function()
 			return 1 - self.Bar_Brightness:GetValue()
 		end
-		
+
 		self.Bar_Brightness.SetColor = function( panel, V )
 			self.Bar_Brightness:SetValue( 1 - V )
 			self.Bar_Brightness:OnChange( V * 255 )
 		end
-		
+
 		self.Bar_Brightness.OnChange = function( panel, brightness )
 			local V = brightness / 255
 			local H, S = self.ColourCircle:GetColor()
 			local colour_alpha = HSVToColor( H, S, V )
 			self.Bar_Alpha:SetFGColor( colour_alpha )
-			
+
 			RunConsoleCommand( self.convar .. "_v", V )
-		end 
-		
-		// Remove default alpha bar background image
+		end
+
+		-- Remove default alpha bar background image
 --[[ 		self.Bar_Brightness.PerformLayout = function()
 			DSlider.PerformLayout( self.Bar_Brightness )
 		end
 		self.Bar_Brightness.imgBackground:Remove() ]]
-	
+
 	AddMenuText( "HSV", 130, 182, self )
-	
+
 
 	self.Bar_Alpha = vgui.Create( "DAlphaBar", self )
 		self.Bar_Alpha:SetPos(210, 45)
@@ -946,19 +946,19 @@ function HSV_COLOUR_CONTROL:Init()
 		self.Bar_Alpha.GetColor = function()
 			return ( 1 - self.Bar_Alpha:GetValue() ) * 255
 		end
-		
+
 		self.Bar_Alpha.SetColor = function( panel, alpha )
 			self.Bar_Alpha:SetValue( 1 - alpha / 255 )
 			self.Bar_Alpha:OnChange( alpha )
 		end
-		
+
 		self.Bar_Alpha.OnChange = function( panel, alpha )
 			RunConsoleCommand( self.convar .. "_a", alpha )
 		end
-	 
+	
 	AddMenuText( "Alpha", 207, 182, self )
-	
-	
+
+
 	*/
 	self.button_defaults = vgui.Create( "PA_Function_Button", self )
 		self.button_defaults:SetPos(200, 5)
@@ -987,7 +987,7 @@ function HSV_COLOUR_CONTROL:SetColor( H, S, V, A )
 	self.ColorMixer:SetColor( col )
 	-- self.ColourCircle:SetColor( H, S )
 	-- self.Bar_Brightness:SetColor( V )
-	-- self.Bar_Alpha:SetColor( A )  
+	-- self.Bar_Alpha:SetColor( A )
 end
 
 function HSV_COLOUR_CONTROL:GetColor()
@@ -998,11 +998,11 @@ function HSV_COLOUR_CONTROL:GetColor()
 	-- local H, S = self.ColourCircle:GetColor()
 	-- local V = self.Bar_Brightness:GetColor()
 	-- local A = self.Bar_Alpha:GetColor()
-	return H, S, V, A 
+	return H, S, V, A
 end
 
 function HSV_COLOUR_CONTROL:Paint( w, h )
-	
+
 end
 
 vgui.Register("PA_ColourControl", HSV_COLOUR_CONTROL, "DPanel")
@@ -1015,12 +1015,12 @@ vgui.Register("PA_ColourControl", HSV_COLOUR_CONTROL, "DPanel")
 local CONSTRUCT_MULTISELECT = {}
 function CONSTRUCT_MULTISELECT:Init()
 	self:SetSize(555, 215)
-	
+
 	self.colour_panel_1 = vgui.Create( "PA_Colour_Panel", self )
 		self.colour_panel_1:SetPos(0, 0)
 		self.colour_panel_1:SetSize(150, 215)
 		self.colour_panel_1:SetColour( BGColor_Point )
-	
+
 	self.list_points = vgui.Create( "PA_Construct_ListView", self.colour_panel_1 )
 		self.list_points:Text( "Points", "Point", self.colour_panel_1 )
 		self.list_points:SetToolTip( "Double click to deselect" )
@@ -1029,12 +1029,12 @@ function CONSTRUCT_MULTISELECT:Init()
 		self.list_points.DoDoubleClick = function( Line, LineID )
 			self.list_points:ClearSelection()
 		end
-	
+
 	self.colour_panel_2 = vgui.Create( "PA_Colour_Panel", self )
 		self.colour_panel_2:SetPos(150, 0)
 		self.colour_panel_2:SetSize(150, 215)
 		self.colour_panel_2:SetColour( BGColor_Line )
-	
+
 	self.list_lines = vgui.Create( "PA_Construct_ListView", self.colour_panel_2 )
 		self.list_lines:Text( "Lines", "Line", self.colour_panel_2 )
 		self.list_lines:SetToolTip( "Double click to deselect" )
@@ -1043,12 +1043,12 @@ function CONSTRUCT_MULTISELECT:Init()
 		self.list_lines.DoDoubleClick = function( Line, LineID )
 			self.list_lines:ClearSelection()
 		end
-	
+
 	self.colour_panel_3 = vgui.Create( "PA_Colour_Panel", self )
 		self.colour_panel_3:SetPos(300, 0)
 		self.colour_panel_3:SetSize(150, 215)
 		self.colour_panel_3:SetColour( BGColor_Plane )
-	
+
 	self.list_planes = vgui.Create( "PA_Construct_ListView", self.colour_panel_3 )
 		self.list_planes:Text( "Planes", "Plane", self.colour_panel_3 )
 		self.list_planes:SetToolTip( "Double click to deselect" )
@@ -1057,8 +1057,8 @@ function CONSTRUCT_MULTISELECT:Init()
 		self.list_planes.DoDoubleClick = function( Line, LineID )
 			self.list_planes:ClearSelection()
 		end
-	
-	
+
+
 	self.button_selectall = vgui.Create( "PA_Function_Button", self )
 		self.button_selectall:SetPos(462, 30)
 		self.button_selectall:SetSize(80, 30)
@@ -1068,7 +1068,7 @@ function CONSTRUCT_MULTISELECT:Init()
 			self:SelectAll( true )
 			return true
 		end )
-	
+
 	self.button_deselectall = vgui.Create( "PA_Function_Button", self )
 		self.button_deselectall:SetPos(462, 65)
 		self.button_deselectall:SetSize(80, 30)
@@ -1078,7 +1078,7 @@ function CONSTRUCT_MULTISELECT:Init()
 			self:SelectAll( false )
 			return true
 		end )
-	
+
 	self.button_attach = vgui.Create( "PA_Function_Button", self )
 		self.button_attach:SetPos(462, 100)
 		self.button_attach:SetSize(80, 30)
@@ -1091,24 +1091,24 @@ function CONSTRUCT_MULTISELECT:Init()
 					PA_funcs.attach_point( ID, PA_activeent )
 				end
 			end
-			
+
 			for k, v in pairs( self.list_lines:GetSelected() ) do
 				ID = v:GetID()
 				if PA_funcs.construct_exists( "Line", ID ) then
 					PA_funcs.attach_line( ID, PA_activeent )
 				end
 			end
-			
+
 			for k, v in pairs( self.list_planes:GetSelected() ) do
 				ID = v:GetID()
 				if PA_funcs.construct_exists( "Plane", ID ) then
 					PA_funcs.attach_plane( ID, PA_activeent )
 				end
 			end
-			
+
 			return true
 		end )
-	
+
 	self.button_delete = vgui.Create( "PA_Function_Button", self )
 		self.button_delete:SetPos(462, 135)
 		self.button_delete:SetSize(80, 30)
@@ -1116,36 +1116,36 @@ function CONSTRUCT_MULTISELECT:Init()
 		self.button_delete:SetToolTip( "Delete the selected constructs" )
 		self.button_delete:SetFunction( function()
 			local ID
-			
+
 			for k, v in pairs( self.list_points:GetSelected() ) do
 				ID = v:GetID()
 				PA_funcs.delete_point( ID )
 			end
-			
+
 			for k, v in pairs( self.list_lines:GetSelected() ) do
 				ID = v:GetID()
 				PA_funcs.delete_line( ID )
 			end
-			
+
 			for k, v in pairs( self.list_planes:GetSelected() ) do
 				ID = v:GetID()
 				PA_funcs.delete_plane( ID )
 			end
-			
+
 			return true
 		end )
-	
+
 	self.button_deleteall = vgui.Create( "PA_Function_Button", self )
 		self.button_deleteall:SetPos(462, 170)
 		self.button_deleteall:SetSize(80, 30)
 		self.button_deleteall:SetText( "Delete All" )
 		self.button_deleteall:SetToolTip( "Delete all existing constructs" )
 		self.button_deleteall:SetFunction( function()
-			
+
 			PA_funcs.delete_points()
 			PA_funcs.delete_lines()
 			PA_funcs.delete_planes()
-			
+
 			return true
 		end )
 end
@@ -1160,7 +1160,7 @@ function CONSTRUCT_MULTISELECT:SelectAll( value )
 			end
 		end
 	end
-	
+
 	SelectLines( value, self.list_points, precision_align_points )
 	SelectLines( value, self.list_lines, precision_align_lines )
 	SelectLines( value, self.list_planes, precision_align_planes )
@@ -1171,32 +1171,32 @@ function CONSTRUCT_MULTISELECT:GetSelection()
 	selection.points = {}
 	selection.lines = {}
 	selection.planes = {}
-	
+
 	for k, v in pairs( self.list_points:GetSelected() ) do
 		local ID = v:GetID()
 		if PA_funcs.construct_exists( "Point", ID  ) then
 			table.insert( selection.points, ID )
 		end
 	end
-	
+
 	for k, v in pairs( self.list_lines:GetSelected() ) do
 		local ID = v:GetID()
 		if PA_funcs.construct_exists( "Line", ID  ) then
 			table.insert( selection.lines, ID )
 		end
 	end
-	
+
 	for k, v in pairs( self.list_planes:GetSelected() ) do
 		local ID = v:GetID()
 		if PA_funcs.construct_exists( "Plane", ID  ) then
 			table.insert( selection.planes, ID )
 		end
 	end
-	
+
 	if ( #selection.points + #selection.lines + #selection.planes ) == 0 then
 		selection = nil
 	end
-	
+
 	return selection
 end
 
@@ -1206,12 +1206,12 @@ end
 vgui.Register("PA_Construct_Multiselect", CONSTRUCT_MULTISELECT, "DPanel")
 
 
-//********************************************************************************************************************//
-// Custom CPanel Functions
-//********************************************************************************************************************//
+--********************************************************************************************************************--
+-- Custom CPanel Functions
+--********************************************************************************************************************--
 
 
-// Reduce width for lower resolutions to compensate for side scrollbar
+-- Reduce width for lower resolutions to compensate for side scrollbar
 local CPanel_Width
 if ScrH() < 1050 then
 	CPanel_Width = 281 --265
@@ -1246,23 +1246,23 @@ local function create_buttons_standard( panel, text )
 end
 
 
-//********************************************************************************************************************//
-// CPanel Controls
-//********************************************************************************************************************//
+--********************************************************************************************************************--
+-- CPanel Controls
+--********************************************************************************************************************--
 
 
-// Open a particular tab in the manipulation panel
+-- Open a particular tab in the manipulation panel
 local function Open_Manipulation_Tab( Tab )
 	PA_manipulation_panel.panel:SetActiveTab( Tab )
-	if !PA_manipulation_panel:IsVisible() then
+	if not PA_manipulation_panel:IsVisible() then
 		PA_manipulation_panel:SetVisible(true)
 	end
 end
 
-// Perform double click function on a listview within the manipulation panel
+-- Perform double click function on a listview within the manipulation panel
 local function Listview_DoDoubleClick( panel, LineID )
 		panel:ClearSelection()
-		
+
 		local Line = panel:GetLine( LineID )
 		panel:SelectItem( Line )
 		panel:DoDoubleClick( Line, LineID )
@@ -1271,7 +1271,7 @@ end
 local TOOL_POINT_PANEL = {}
 function TOOL_POINT_PANEL:Init()
 	AddMenuText("POINT", CPanel_Width/2 - 18, 0, self)
-	
+
 	self.list_primarypoint = vgui.Create("PA_Construct_ListView", self)
 		self.list_primarypoint:Text( "", "Point" )
 		self.list_primarypoint:SetToolTip( "Primary selection (functions will only affect this point)" )
@@ -1283,14 +1283,14 @@ function TOOL_POINT_PANEL:Init()
 		self.list_primarypoint.OnRowSelected = function( panel, line )
 			PA_selected_point = line
 		end
-		
+
 		self.list_primarypoint.DoDoubleClick = function( Line, LineID )
 			local panel = PA_manipulation_panel.points_tab
 			Open_Manipulation_Tab( panel.tab )
 			Listview_DoDoubleClick( panel.list_primarypoint, LineID )
 		end
 		self.list_primarypoint:SelectFirstItem()
-	
+
 	self.list_secondarypoint = vgui.Create("PA_Construct_ListView", self)
 		self.list_secondarypoint:Text( "", "Point" )
 		self.list_secondarypoint:SetToolTip( "Secondary selection" )
@@ -1299,22 +1299,22 @@ function TOOL_POINT_PANEL:Init()
 		self.list_secondarypoint:SetSize(CPanel_Width/2 - 5, 100)
 		self.list_secondarypoint:SetMultiSelect(false)
 		self.list_secondarypoint:SetIndicatorOffset( 15 )
-		
+
 		self.list_secondarypoint.DoDoubleClick = function( Line, LineID )
 			local panel = PA_manipulation_panel.points_tab
 			Open_Manipulation_Tab( panel.tab )
 			Listview_DoDoubleClick( panel.list_primarypoint, LineID )
 		end
 		self.list_secondarypoint:SelectFirstItem()
-	
+
 	create_buttons_standard( self, "point" )
-	
+
 		self.button_view:SetFunction( function()
-			if !PA_funcs.construct_exists( "Point", PA_selected_point ) then return false end
+			if not PA_funcs.construct_exists( "Point", PA_selected_point ) then return false end
 			local point = PA_funcs.point_global( PA_selected_point )
 			return PA_funcs.set_playerview( point.origin )
 		end )
-		
+
 		self.button_delete:SetFunction( function()
 			return PA_funcs.delete_point( PA_selected_point )
 		end )
@@ -1328,7 +1328,7 @@ function TOOL_POINT_PANEL:Init()
 			self.list_secondarypoint:SelectFirstItem()
 			return PA_funcs.delete_points()
 		end )
-	
+
 	self.button_moveentity = vgui.Create( "PA_Move_Button", self )
 		self.button_moveentity:SetPos(0, 160)
 		self.button_moveentity:SetSize(CPanel_Width, 20)
@@ -1337,19 +1337,19 @@ function TOOL_POINT_PANEL:Init()
 		self.button_moveentity:SetFunction( function()
 			local PA_selected_point2 = self.list_secondarypoint:GetSelectedLine()
 			if PA_selected_point == PA_selected_point2 then
-				Warning("Cannot move between the same point!")
+				Warning("Cannot move between the same pointnot ")
 				return false
 			end
-			
+
 			local point1 = PA_funcs.point_global( PA_selected_point )
 			local point2 = PA_funcs.point_global( PA_selected_point2 )
-			
-			if !point1 or !point2 then
+
+			if not point1 or !point2 then
 				Warning("Points not correctly defined")
 				return false
 			end
-			
-			if !PA_funcs.move_entity(point1.origin, point2.origin, PA_activeent) then return false end
+
+			if not PA_funcs.move_entity(point1.origin, point2.origin, PA_activeent) then return false end
 		end )
 end
 
@@ -1368,7 +1368,7 @@ vgui.Register("PA_Tool_Point_Panel", TOOL_POINT_PANEL, "DPanel")
 local TOOL_LINE_PANEL = {}
 function TOOL_LINE_PANEL:Init()
 	AddMenuText("LINE", CPanel_Width/2 - 12, 0, self)
-	
+
 	self.list_line = vgui.Create( "PA_Construct_ListView", self )
 		self.list_line:Text( "", "Line" )
 		self.list_line:SetHeaderHeight( 1 )
@@ -1379,35 +1379,35 @@ function TOOL_LINE_PANEL:Init()
 		self.list_line.OnRowSelected = function( panel, line )
 			PA_selected_line = line
 		end
-		
+
 		self.list_line.DoDoubleClick = function( Line, LineID )
 			local panel = PA_manipulation_panel.lines_tab
 			Open_Manipulation_Tab( panel.tab )
 			Listview_DoDoubleClick( panel.list_primary, LineID )
 		end
 		self.list_line:SelectFirstItem()
-	
+
 	create_buttons_standard( self, "line" )
-	
+
 		self.button_view:SetFunction( function()
-			if !PA_funcs.construct_exists( "Line", PA_selected_line ) then return false end
+			if not PA_funcs.construct_exists( "Line", PA_selected_line ) then return false end
 			local line = PA_funcs.line_global( PA_selected_line )
 			return PA_funcs.set_playerview( line.startpoint )
 		end )
-		
+
 		self.button_delete:SetFunction( function()
 			return PA_funcs.delete_line(PA_selected_line)
 		end )
-		
+
 		self.button_attach:SetFunction( function()
 			return PA_funcs.attach_line(PA_selected_line, PA_activeent)
 		end )
-		
+
 		self.button_deleteall:SetFunction( function()
 			self.list_line:SelectFirstItem()
 			return PA_funcs.delete_lines()
 		end )
-		
+
 	self.button_moveentity = vgui.Create( "PA_Move_Button", self )
 		self.button_moveentity:SetPos(0, 160)
 		self.button_moveentity:SetSize(CPanel_Width, 20)
@@ -1415,14 +1415,14 @@ function TOOL_LINE_PANEL:Init()
 		self.button_moveentity:SetToolTip( "Move entity by line" )
 		self.button_moveentity:SetFunction( function()
 			local line = PA_funcs.line_global(PA_selected_line)
-			if !line then
+			if not line then
 				Warning("Line not correctly defined")
 				return false
 			end
-			
+
 			local point1 = line.startpoint
 			local point2 = line.endpoint
-			if !PA_funcs.move_entity(point1, point2, PA_activeent) then return false end
+			if not PA_funcs.move_entity(point1, point2, PA_activeent) then return false end
 		end )
 end
 
@@ -1441,7 +1441,7 @@ vgui.Register("PA_Tool_Line_Panel", TOOL_LINE_PANEL, "DPanel")
 local TOOL_PLANE_PANEL = {}
 function TOOL_PLANE_PANEL:Init()
 	AddMenuText("PLANE", CPanel_Width/2 - 17, 0, self)
-	
+
 	self.list_plane = vgui.Create( "PA_Construct_ListView", self )
 		self.list_plane:Text( "", "Plane" )
 		self.list_plane:SetHeaderHeight( 1 )
@@ -1452,30 +1452,30 @@ function TOOL_PLANE_PANEL:Init()
 		self.list_plane.OnRowSelected = function( panel, line )
 			PA_selected_plane = line
 		end
-		
+
 		self.list_plane.DoDoubleClick = function( Line, LineID )
 			local panel = PA_manipulation_panel.planes_tab
 			Open_Manipulation_Tab( panel.tab )
 			Listview_DoDoubleClick( panel.list_primary, LineID )
 		end
 		self.list_plane:SelectFirstItem()
-	
+
 	create_buttons_standard( self, "plane" )
-	
+
 		self.button_view:SetFunction( function()
-			if !PA_funcs.construct_exists( "Plane", PA_selected_plane ) then return false end
+			if not PA_funcs.construct_exists( "Plane", PA_selected_plane ) then return false end
 			local plane = PA_funcs.plane_global( PA_selected_plane )
 			return PA_funcs.set_playerview( plane.origin )
 		end )
-		
+
 		self.button_delete:SetFunction( function()
 			return PA_funcs.delete_plane(PA_selected_plane)
 		end )
-		
+
 		self.button_attach:SetFunction( function()
 			return PA_funcs.attach_plane(PA_selected_plane, PA_activeent)
 		end )
-		
+
 		self.button_deleteall:SetFunction( function()
 			self.list_plane:SelectFirstItem()
 			return PA_funcs.delete_planes()
@@ -1503,8 +1503,8 @@ function TOOL_LIST:Init()
 		self.list_tooltype:SetSortable(false)
 		self.list_tooltype:SetMultiSelect(false)
 		self.list_tooltype:AddColumn("")
-		//self.list_tooltype:AddColumn("                     Left Click Assignment")
-		
+		--self.list_tooltype:AddColumn("                     Left Click Assignment")
+
 		self.list_tooltype:AddLine("Point - Hitpos")
 		self.list_tooltype:AddLine("Point - Coordinate Centre")
 		self.list_tooltype:AddLine("Point - Mass Centre")
@@ -1518,13 +1518,13 @@ function TOOL_LIST:Init()
 		self.list_tooltype.OnRowSelected = function(parent, line, isselected)
 			RunConsoleCommand( PA_.."tooltype", tostring(line) )
 		end
-	
-	// Draw coloured tool option backgrounds
+
+	-- Draw coloured tool option backgrounds
 	for i = 1, 9 do
 		local line = self.list_tooltype:GetLine(i)
 		local height = line:GetTall()
 		local DrawColourOutline
-		
+
 		if i < 5 then
 			DrawColourOutline = table.Copy(BGColor_Point)
 		elseif i < 8 then
@@ -1532,9 +1532,9 @@ function TOOL_LIST:Init()
 		else
 			DrawColourOutline = table.Copy(BGColor_Plane)
 		end
-		
+
 		local DrawColour = DrawColourOutline
-		
+
 		line.Paint = function( w, h )
 			if line:IsSelected() then
 				DrawColour.a = 150
@@ -1543,11 +1543,11 @@ function TOOL_LIST:Init()
 			end
 			surface.SetDrawColor( DrawColour )
 			surface.DrawRect( 0, 0, CPanel_Width, height - 7 )
-			
+
 			surface.SetDrawColor( DrawColourOutline )
 			surface.DrawOutlinedRect(0, 0, CPanel_Width - 2, height-7)
 		end
-		
+
 		line.Columns[1]:SetTextColor( color_black )
 		line.Columns[1].UpdateColours = function() end
 	end
@@ -1580,7 +1580,7 @@ function TOOL_OPTIONS:Init()
 		self.checkbox_snap_edge:SizeToContents()
 		self.checkbox_snap_edge:SetToolTip( "Snap to the edges of props when placing constructs" )
 		self.checkbox_snap_edge:SetConVar( PA_.."edge_snap" )
-	
+
 	self.checkbox_snap_centre = vgui.Create( "DCheckBoxLabel", self )
 		self.checkbox_snap_centre:SetPos(0, 40)
 		self.checkbox_snap_centre:SetText( "Snap to Centre Lines" )
@@ -1601,15 +1601,15 @@ function TOOL_OPTIONS:Init()
 		self.slider_snap_dist.Slider:SetNotches( self.slider_snap_dist.Slider:GetWide() / 4 )
 		self.slider_snap_dist:SetToolTip( "Sets the maximum distance for edge/centre snap detection (in units)" )
 		self.slider_snap_dist:SetConVar( PA_.."snap_distance" )
-	
-	// Help button
+
+	-- Help button
 	self.button_help = vgui.Create( "PA_Function_Button", self )
 		self.button_help:SetSize(60, 20)
 		self.button_help:SetPos(CPanel_Width - self.button_help:GetWide(), 2)
 		self.button_help:SetText( "Help" )
 		self.button_help:SetToolTip( "Open online help using the Steam in-game browser" )
 		self.button_help:SetFunction( function()
-			return gui.OpenURL( "https://sourceforge.net/userapps/mediawiki/wenli/index.php?title=Precision_Alignment" )
+			return gui.OpenURL( "https:--sourceforge.net/userapps/mediawiki/wenli/index.php?title=Precision_Alignment" )
 		end )
 end
 
@@ -1621,11 +1621,11 @@ function TOOL_OPTIONS:Paint(w,h)
 end
 
 vgui.Register("PA_CPanel_tool_options", TOOL_OPTIONS, "DPanel")
- 
 
-//********************************************************************************************************************//
-// CPanel Layout
-//********************************************************************************************************************//
+
+--********************************************************************************************************************--
+-- CPanel Layout
+--********************************************************************************************************************--
 
 CPanel:Clear()
 
@@ -1649,9 +1649,9 @@ local plane_window = vgui.Create( "PA_Tool_Plane_Panel" )
 CPanel:AddItem( plane_window )
 CPanel.plane_window = plane_window
 
-//********************************************************************************************************************//
-// Usermessages
-//********************************************************************************************************************//
+--********************************************************************************************************************--
+-- Usermessages
+--********************************************************************************************************************--
 
 
 local function select_next_point()
@@ -1693,25 +1693,25 @@ local function select_next_plane()
 	return false
 end
 
-// Called when the server sends click data - used to add a new point/line
+-- Called when the server sends click data - used to add a new point/line
 local function umsg_click_hook()
 	local point = Vector( net.ReadFloat(), net.ReadFloat(), net.ReadFloat() )
 	local normal = Vector( net.ReadFloat(), net.ReadFloat(), net.ReadFloat() )
 	local ent = net.ReadEntity()
-	
+
 	local shift = LocalPlayer():KeyDown( IN_SPEED )
 	local alt = LocalPlayer():KeyDown( IN_WALK )
-	
+
 	local tooltype = GetConVarNumber( PA_.. "tooltype" )
-	
-	// Points
+
+	-- Points
 	if tooltype <= 4 then
 		if shift then
 			select_next_point()
 		end
-		
+
 		PA_funcs.set_point(PA_selected_point, point)
-		// Auto-attach to selected ent
+		-- Auto-attach to selected ent
 		if alt then
 			if PA_activeent then
 				PA_funcs.attach_point( PA_selected_point, PA_activeent )
@@ -1721,30 +1721,30 @@ local function umsg_click_hook()
 		elseif precision_align_points[PA_selected_point].entity ~= ent then
 			PA_funcs.attach_point( PA_selected_point, ent )
 		end
-		
-	// Lines
+
+	-- Lines
 	elseif tooltype == 5 then
 		if shift then
 			select_next_line()
 		end
-		
-		// Alt-click will place end point
+
+		-- Alt-click will place end point
 		if alt then
 			PA_funcs.set_line( PA_selected_line, nil, point, nil, nil )
 		else
 			PA_funcs.set_line( PA_selected_line, point, nil, nil, nil )
-			
-			// Only auto-attach by start point, not end point
+
+			-- Only auto-attach by start point, not end point
 			if PA_funcs.construct_exists( "Line", PA_selected_line ) and precision_align_lines[PA_selected_line].entity ~= ent then
 				PA_funcs.attach_line( PA_selected_line, ent )
 			end
-		end	
-	
+		end
+
 	elseif tooltype == 6 then
 		if shift then
 			select_next_line()
 		end
-		
+
 		PA_funcs.set_line( PA_selected_line, point, nil, normal, nil )
 		if alt then
 			if PA_activeent then
@@ -1755,16 +1755,16 @@ local function umsg_click_hook()
 		elseif precision_align_lines[PA_selected_line].entity ~= ent then
 			PA_funcs.attach_line( PA_selected_line, ent )
 		end
-		
+
 	elseif tooltype == 7 then
 		PA_funcs.set_line( PA_selected_line, nil, nil, normal, nil )
-		
-	// Planes
+
+	-- Planes
 	elseif tooltype == 8 then
 		if shift then
 			select_next_plane()
 		end
-		
+
 		PA_funcs.set_plane( PA_selected_plane, point, normal )
 		if alt then
 			if PA_activeent then
@@ -1775,26 +1775,26 @@ local function umsg_click_hook()
 		elseif precision_align_planes[PA_selected_plane].entity ~= ent then
 			PA_funcs.attach_plane( PA_selected_plane, ent )
 		end
-		
+
 	elseif tooltype == 9 then
 		PA_funcs.set_plane( PA_selected_plane, nil, normal )
 	end
 end
 net.Receive( PA_ .. "click", umsg_click_hook )
 
-// Called when the server sends entity data - so the client knows which entity is selected
+-- Called when the server sends entity data - so the client knows which entity is selected
 local function umsg_entity_hook()
 	PA_activeent = net.ReadEntity()
 end
 net.Receive( PA_ .. "ent", umsg_entity_hook )
 
 
-//********************************************************************************************************************//
-// HUD Display
-//********************************************************************************************************************//
+--********************************************************************************************************************--
+-- HUD Display
+--********************************************************************************************************************--
 
 
-// Construct draw sizes
+-- Construct draw sizes
 local point_size_min = math.max( GetConVarNumber( PA_.."size_point" ), 1 )
 local point_size_max = GetConVarNumber( PA_.."size_point" ) * 1000
 
@@ -1814,7 +1814,7 @@ cvars.AddChangeCallback( PA_.."size_line_end",  function( CVar, Prev, New ) line
 cvars.AddChangeCallback( PA_.."size_plane", function( CVar, Prev, New ) plane_size = tonumber(New) end  )
 cvars.AddChangeCallback( PA_.."size_plane_normal", function( CVar, Prev, New ) plane_size_normal = tonumber(New) end  )
 
-// Manage attachment line colour changes
+-- Manage attachment line colour changes
 local H = GetConVarNumber( PA_.."attachcolour_h" )
 local S = GetConVarNumber( PA_.."attachcolour_s" )
 local V = GetConVarNumber( PA_.."attachcolour_v" )
@@ -1833,7 +1833,7 @@ local function SetAttachColour(CVar, Prev, New)
 	elseif CVar == PA_.."attachcolour_a" then
 		attachcolourHSV.a = New
 	end
-	
+
 	attachcolourRGB = HSVToColor( attachcolourHSV.h, attachcolourHSV.s, attachcolourHSV.v )
 	attachcolourRGB.a = attachcolourHSV.a
 end
@@ -1854,15 +1854,15 @@ local function inview( pos2D )
 	return false
 end
 
-// HUD draw function	
+-- HUD draw function
 local function precision_align_draw( w, h)
 	local playerpos = LocalPlayer():GetShootPos()
-	
-	// Points
+
+	-- Points
 	for k, v in ipairs (precision_align_points) do
 		if v.visible and v.origin then
-		
-			//Check if point exists
+
+			--Check if point exists
 			local point_temp = PA_funcs.point_global(k)
 			if point_temp then
 				local origin = point_temp.origin
@@ -1871,15 +1871,15 @@ local function precision_align_draw( w, h)
 					local distance = playerpos:Distance( origin )
 					local size = math.Clamp( point_size_max / distance, point_size_min, point_size_max )
 					local text_dist = math.Clamp(text_max / distance, text_min, text_max)
-					
+
 					surface.SetDrawColor( pointcolour.r, pointcolour.g, pointcolour.b, pointcolour.a )
-					
+
 					surface.DrawLine( point.x - size, point.y, point.x + size, point.y )
 					surface.DrawLine( point.x, point.y + size, point.x, point.y - size )
-					
+
 					draw.DrawText( tostring(k), "Default", point.x + text_dist, point.y + text_dist/1.5, Color(pointcolour.r, pointcolour.g, pointcolour.b, pointcolour.a), 0 )
-					
-					// Draw attachment line
+
+					-- Draw attachment line
 					if draw_attachments then
 						if IsValid(v.entity) then
 							local entpos = v.entity:GetPos():ToScreen()
@@ -1891,32 +1891,32 @@ local function precision_align_draw( w, h)
 			end
 		end
 	end
-	
-	// Lines
+
+	-- Lines
 	for k, v in ipairs (precision_align_lines) do
 		if v.visible and v.startpoint and v.endpoint then
-		
-			//Check if line exists
+
+			--Check if line exists
 			local line_temp = PA_funcs.line_global(k)
 			if line_temp then
 				local startpoint = line_temp.startpoint
 				local endpoint = line_temp.endpoint
-			
+
 				local line_start = startpoint:ToScreen()
 				local line_end = endpoint:ToScreen()
-				
+
 				local distance1 = playerpos:Distance( startpoint )
 				local distance2 = playerpos:Distance( endpoint )
-				
+
 				local size2 = math.Clamp(line_size_max / distance2, line_size_min, line_size_max)
 				local text_dist = math.Clamp(text_max / distance1, text_min, text_max)
-				
+
 				surface.SetDrawColor( linecolour.r, linecolour.g, linecolour.b, linecolour.a )
-				
-				// Start X
+
+				-- Start X
 				local normal = (endpoint - startpoint):GetNormal()
 				local dir1, dir2
-				
+
 				if IsValid(v.entity) then
 					local up = v.entity:GetUp()
 					if normal:Dot(up) < 0.9 then
@@ -1931,25 +1931,25 @@ local function precision_align_draw( w, h)
 						dir1 = (normal:Cross(Vector(1,0,0))):GetNormal()
 					end
 				end
-				
+
 				dir2 = (dir1:Cross(normal)):GetNormal() * line_size_start
 				dir1 = dir1 * line_size_start
-				
+
 				local v1 = (startpoint + dir1 + dir2):ToScreen()
 				local v2 = (startpoint - dir1 + dir2):ToScreen()
 				local v3 = (startpoint - dir1 - dir2):ToScreen()
 				local v4 = (startpoint + dir1 - dir2):ToScreen()
-				
-				// Start X
+
+				-- Start X
 				if inview( line_start ) then
 					surface.DrawLine(v1.x, v1.y, v3.x, v3.y)
 					surface.DrawLine(v2.x, v2.y, v4.x, v4.y)
 				end
-				
-				// Line
+
+				-- Line
 				surface.DrawLine( line_start.x, line_start.y, line_end.x, line_end.y )
-				
-				// End =
+
+				-- End =
 				if inview( line_end ) then
 					local line_dir_2D = Vector(line_end.x - line_start.x, line_end.y - line_start.y, 0):GetNormalized()
 					local norm_dir_2D = {x = -line_dir_2D.y, y = line_dir_2D.x}
@@ -1958,10 +1958,10 @@ local function precision_align_draw( w, h)
 					surface.DrawLine( line_end.x + (line_dir_2D.x/3 - norm_dir_2D.x) * size2, line_end.y + (line_dir_2D.y/3 - norm_dir_2D.y) * size2,
 									  line_end.x + (line_dir_2D.x/3 + norm_dir_2D.x) * size2, line_end.y + (line_dir_2D.y/3 + norm_dir_2D.y) * size2 )
 				end
-				
+
 				draw.DrawText( tostring(k), "Default", line_start.x + text_dist, line_start.y - text_dist/1.5 - 15, Color(linecolour.r, linecolour.g, linecolour.b, linecolour.a), 3 )
 
-				// Draw attachment line
+				-- Draw attachment line
 				if draw_attachments then
 					if IsValid(v.entity) then
 						local entpos = v.entity:GetPos():ToScreen()
@@ -1972,31 +1972,31 @@ local function precision_align_draw( w, h)
 			end
 		end
 	end
-	
-	// Planes
+
+	-- Planes
 	for k, v in ipairs (precision_align_planes) do
 		if v.visible and v.origin and v.normal then
-		
-			//Check if plane exists
+
+			--Check if plane exists
 			local plane_temp = PA_funcs.plane_global(k)
 			if plane_temp then
-			
+
 				local origin = plane_temp.origin
 				local normal = plane_temp.normal
-			
-				// Draw normal line
+
+				-- Draw normal line
 				local line_start = origin:ToScreen()
 				if inview( line_start ) then
-				
+
 					local line_end = ( origin + normal * plane_size_normal ):ToScreen()
-						
+
 					local distance = playerpos:Distance( origin )
 					local text_dist = math.Clamp(text_max / distance, text_min, text_max)
-					
+
 					surface.SetDrawColor( planecolour.r, planecolour.g, planecolour.b, planecolour.a )
 					surface.DrawLine( line_start.x, line_start.y, line_end.x, line_end.y )
-					
-					// Draw plane surface
+
+					-- Draw plane surface
 					local dir1, dir2
 					if IsValid(v.entity) then
 						local up = v.entity:GetUp()
@@ -2012,23 +2012,23 @@ local function precision_align_draw( w, h)
 							dir1 = (normal:Cross(Vector(1,0,0))):GetNormal()
 						end
 					end
-					
+
 					dir2 = (dir1:Cross(normal)):GetNormal() * plane_size
 					dir1 = dir1 * plane_size
-					
+
 					local v1 = (origin + dir1 + dir2):ToScreen()
 					local v2 = (origin - dir1 + dir2):ToScreen()
 					local v3 = (origin - dir1 - dir2):ToScreen()
 					local v4 = (origin + dir1 - dir2):ToScreen()
-					
+
 					surface.DrawLine( v1.x, v1.y, v2.x, v2.y )
 					surface.DrawLine( v2.x, v2.y, v3.x, v3.y )
 					surface.DrawLine( v3.x, v3.y, v4.x, v4.y )
 					surface.DrawLine( v4.x, v4.y, v1.x, v1.y )
-					
+
 					draw.DrawText( tostring(k), "Default", line_start.x - text_dist, line_start.y + text_dist/1.5, Color(planecolour.r, planecolour.g, planecolour.b, planecolour.a), 1 )
-					//Default
-					// Draw attachment line
+					--Default
+					-- Draw attachment line
 					if draw_attachments then
 						if IsValid(v.entity) then
 							local entpos = v.entity:GetPos():ToScreen()
@@ -2046,9 +2046,9 @@ hook.Add("HUDPaint", "draw_precision_align", precision_align_draw)
 
 local function precision_align_displayhud_func( ply, cmd, args )
 	local enabled = tobool( args[1] )
-	if !enabled then
+	if not enabled then
 		hook.Remove( "HUDPaint", "draw_precision_align" )
-	else 
+	else
 		hook.Add("HUDPaint", "draw_precision_align", precision_align_draw)
 	end
 	return true
@@ -2059,7 +2059,7 @@ PA_manipulation_panel = vgui.Create( "PA_Manipulation_Frame" )
 PA_manipulation_panel:SetVisible(false)
 
 local function precision_align_open_panel_func( ply, cmd, args )
-	if !PA_manipulation_panel then
+	if not PA_manipulation_panel then
 		local PA_manipulation_panel = vgui.Create( "PA_Manipulation_Frame" )
 	else
 		if PA_manipulation_panel:IsVisible() then
